@@ -2,6 +2,7 @@
 #include <stdlib.h> 
 #include <string.h>
 
+// test commment
 void print_str_info(char *str)
 {
     printf("str: %s\n", str);
