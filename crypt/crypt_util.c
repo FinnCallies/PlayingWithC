@@ -4,6 +4,7 @@
 #include <string.h>
 #include "crypt_util.h"
 
+
 void print_bytes(byte *bytes, int len) 
 {
     for (int i = 0; i < len; i++) {
