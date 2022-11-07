@@ -6,9 +6,9 @@
 #include "crypt_util.h"
 #include "caesar.h"
 #include "vigenere.h"
+#include "rsa.h"
 
-
-int main(int argc, char const *argv[])
+/* void enc_dec()
 {
     bool logs = false;
     int block_size = 16;
@@ -36,12 +36,21 @@ int main(int argc, char const *argv[])
     printf("\n");
 
 
-    // enc_vignere_ecb(plaintext, text_size, key, encrypted, block_size);
-    // dec_vignere_ecb(encrypted, text_size, key, decrypted, block_size);
+    // enc_vigenere_ecb(plaintext, text_size, key, encrypted, block_size);
+    // dec_vigenere_ecb(encrypted, text_size, key, decrypted, block_size);
 
-    enc_vignere_cbc(plaintext, text_size, key, encrypted, iv, block_size, logs);
-    dec_vignere_cbc(encrypted, text_size, key, decrypted, iv, block_size, logs);
+    // enc_vigenere_cbc(plaintext, text_size, key, encrypted, iv, block_size, logs);
+    // dec_vigenere_cbc(encrypted, text_size, key, decrypted, iv, block_size, logs);
 
+    int prv_key;
+    int pub_key;
+    int n;
+
+    gen_rsa_key_pair(11, 13, &prv_key, &pub_key, &n);
+    printf("prv_key: %d, pub_key: %d, n: %d\n", prv_key, pub_key, n);
+
+    enc_rsa(plaintext, text_size, pub_key, n, encrypted);
+    dec_rsa(encrypted, text_size, prv_key, n, decrypted);
 
 
     if (is_equal(plaintext, decrypted, text_size)) {
@@ -56,6 +65,16 @@ int main(int argc, char const *argv[])
     free(encrypted);
     free(decrypted);
     free(iv);
+} */
+
+int main(int argc, char const *argv[])
+{
+
+    // enc_dec();
+    
+    
+    generate_rsa_key_pair();
+    
 
     return 0;
 }

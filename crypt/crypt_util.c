@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 #include "crypt_util.h"
 
 
@@ -29,6 +30,7 @@ void print_bytes_by_block(byte *bytes, int len, int block_size)
 
 void gen_rndm_block(byte *block, int len)
 {
+    srand(time(NULL));
     for (int i = 0; i < len; i++) {
         block[i] = rand() % 256;
     }

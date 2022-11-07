@@ -18,7 +18,7 @@ void dec_vigenere(byte *cipher, int len, byte *key, int key_len, byte *plain)
 void enc_vigenere_ecb(byte *plain, int len, byte *key, byte *cipher, int block_size)
 {
     for (int i = 0; i < len/block_size; i ++) {
-        enc_vignere(plain + i * block_size, block_size, key, block_size, cipher + i * block_size);
+        enc_vigenere(plain + i * block_size, block_size, key, block_size, cipher + i * block_size);
     }
 
     printf("ENCRYPTED PLAINTEXT: ");
@@ -30,7 +30,7 @@ void enc_vigenere_ecb(byte *plain, int len, byte *key, byte *cipher, int block_s
 void dec_vigenere_ecb(byte *cipher, int len, byte *key, byte *plain, int block_size)
 {
     for (int i = 0; i < len/block_size; i ++) {
-        dec_vignere(cipher + i * block_size, block_size, key, block_size, plain + i * block_size);
+        dec_vigenere(cipher + i * block_size, block_size, key, block_size, plain + i * block_size);
     }
 
     printf("DECRYPTED CIPHERTEXT: ");
@@ -75,7 +75,7 @@ void enc_vigenere_cbc(byte *plain, int len, byte *key, byte *cipher, byte *iv, i
         }
 
         // block cipher encrypt
-        enc_vignere(xor_block, block_size, key, block_size, cipher + i * block_size);
+        enc_vigenere(xor_block, block_size, key, block_size, cipher + i * block_size);
         if (logs) {
             printf("encrypted xor_block: ");
             print_bytes(cipher + i * block_size, block_size);
@@ -128,7 +128,7 @@ void dec_vigenere_cbc(byte *cipher, int len, byte *key, byte *plain, byte *iv, i
         }
 
         // block cipher decrypt
-        dec_vignere(cipher_block, block_size, key, block_size, xor_block);
+        dec_vigenere(cipher_block, block_size, key, block_size, xor_block);
         if (logs) {
             printf("decrypted cipher_block(xor_block): ");
             print_bytes(xor_block, block_size);
@@ -166,7 +166,7 @@ void enc_vigenere_ctr(byte *plain, int len, byte *key, byte *cipher, byte *nonce
     for (int i = 0; i < len / block_size; i++) {
         xor_bytes(nonce_xor_counter, nonce, counter, block_size);
 
-        enc_vignere(nonce_xor_counter, block_size, key, block_size, encrypted);
+        enc_vigenere(nonce_xor_counter, block_size, key, block_size, encrypted);
 
         xor_bytes(cipher + i * block_size, plain + i * block_size, encrypted, block_size);
         
@@ -192,7 +192,7 @@ void dec_vigenere_ctr(byte *cipher, int len, byte *key, byte *plain, byte *nonce
     for (int i = 0; i < len / block_size; i++) {
         xor_bytes(nonce_xor_counter, nonce, counter, block_size);
 
-        enc_vignere(nonce_xor_counter, block_size, key, block_size, decrypted);
+        enc_vigenere(nonce_xor_counter, block_size, key, block_size, decrypted);
 
         xor_bytes(plain + i * block_size, cipher + i * block_size, decrypted, block_size);
         

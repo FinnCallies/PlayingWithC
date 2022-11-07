@@ -6,10 +6,12 @@
 
 bool is_prime(double v) 
 {
+    if (v < 2) return false;
+
     for (int i = 2; i <= sqrt(v); i++) {
-        if (fmod(v, (double) i) != 0)
-            return false;
+        if ((int) v % i == 0) return false;
     }
+
     return true;
 }
 
@@ -22,7 +24,6 @@ double get_primes(double least_significant, double most_significant, double *ret
     printf("listing primes between %lf and %lf:\n", least_significant, most_significant);
     for (double i = least_significant; i < most_significant; i++) {
         if (is_prime(i)) {
-            printf("found prime: %lf\n", i);
             list[index] = i;
             index++;
         }
@@ -90,6 +91,11 @@ void gen_p_q(double *p, double *q, double l, double m)
     } while (!is_coprime(*p, *q));
 }
 
+void eeA(double a, double b, double *x, double *y)
+{
+    
+}
+
 void generate_rsa_key_pair()
 {
     double l, m = 0;
@@ -102,6 +108,12 @@ void generate_rsa_key_pair()
     printf("q = %lf\n", q);
     double n = p * q;
     double phi = (p - 1) * (q - 1);
+
+    if (is_coprime(e, phi)) {
+        printf("e and phi are coprime\n");
+    } else {
+        printf("e and phi are not coprime\n");
+    }
 
     printf("n = %lf, phi(n) = %lf\n", n, phi);
 }

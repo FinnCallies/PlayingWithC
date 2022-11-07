@@ -12,4 +12,4 @@ int get_coprimes(int *prime_list, int len, int v, int *coprime_list);
 void gen_p_q(double *p, double *q, double l, double m);
 void generate_rsa_key_pair();
 
-#endif
+#endif // RSA_H_
