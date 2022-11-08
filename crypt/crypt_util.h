@@ -14,6 +14,8 @@ void print_bytes(byte *bytes, int len);
 
 void print_bytes_by_block(byte *bytes, int len, int block_size);
 
+void generate_rndm_plaintext(byte *plaintext, int len);
+
 void gen_rndm_block(byte *block, int len);
 
 bool is_equal(byte *block1, byte *block2, int len);

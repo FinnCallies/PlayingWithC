@@ -28,6 +28,13 @@ void print_bytes_by_block(byte *bytes, int len, int block_size)
     free(block);
 }
 
+void generate_rndm_plaintext(byte *plaintext, int len)
+{
+    for (int i = 0; i < len; i++) {
+        plaintext[i] = rand() % 256;
+    }
+}
+
 void gen_rndm_block(byte *block, int len)
 {
     srand(time(NULL));
