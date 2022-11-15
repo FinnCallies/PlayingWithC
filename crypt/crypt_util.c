@@ -14,6 +14,22 @@ void print_bytes(byte *bytes, int len)
     printf("\n");
 }
 
+void print_byte_binary(byte b)
+{
+    for (int i = 7; i >= 0; i--) {
+        printf("%d", (b >> i) & 1);
+    }
+    printf(" ");
+}
+
+void print_bytes_binary(byte *bytes, int len)
+{
+    for (int i = 0; i < len; i++) {
+        print_byte_binary(bytes[i]);
+    }
+    printf("\n");
+}
+
 void print_bytes_by_block(byte *bytes, int len, int block_size)
 {
     byte *block = (byte *)calloc(block_size, sizeof(byte));

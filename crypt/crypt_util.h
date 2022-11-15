@@ -10,7 +10,23 @@
 typedef unsigned char byte;
 
 
+void print_bit(bit *b);
+
+void print_bits(bit *bits, int len);
+
+void bits2byte(bit *bits, byte *byte);
+
+void bits2bytes(bit *bits, byte *bytes, int len);
+
+void byte2bits(byte byte, bit *bits);
+
+void bytes2bits(byte *bytes, bit *bits, int len);
+
 void print_bytes(byte *bytes, int len);
+
+void print_byte_binary(byte b);
+
+void print_bytes_binary(byte *bytes, int len);
 
 void print_bytes_by_block(byte *bytes, int len, int block_size);
 
