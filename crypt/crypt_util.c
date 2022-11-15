@@ -44,6 +44,14 @@ void print_bytes_by_block(byte *bytes, int len, int block_size)
     free(block);
 }
 
+void generate_rndm_ints(int *arr, int len, int max)
+{
+    srand(time(NULL));
+    for (int i = 0; i < len; i++) {
+        arr[i] = rand() % max;
+    }
+}
+
 void generate_rndm_plaintext(byte *plaintext, int len)
 {
     for (int i = 0; i < len; i++) {

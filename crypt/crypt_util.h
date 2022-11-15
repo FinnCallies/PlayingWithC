@@ -18,6 +18,8 @@ void print_bytes_binary(byte *bytes, int len);
 
 void print_bytes_by_block(byte *bytes, int len, int block_size);
 
+void generate_rndm_ints(int *arr, int len, int max);
+
 void generate_rndm_plaintext(byte *plaintext, int len);
 
 void gen_rndm_block(byte *block, int len);
