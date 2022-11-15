@@ -29,5 +29,7 @@ void encode_base64(byte *bytes, byte *base64, int len);
 
 void decode_base64(byte *base64, byte *bytes, int len);
 
+void b64_demo();
+
 
 #endif // BASE64_H_

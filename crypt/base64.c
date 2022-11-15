@@ -155,3 +155,31 @@ void decode_base64(byte *base64, byte *bytes, int len)
 
     free(sextets);
 }
+
+void b64_demo()
+{
+    int byte_cnt = 16;
+    int sextet_cnt = get_sextet_cnt(byte_cnt);
+
+    byte *plain = (byte *)calloc(byte_cnt, sizeof(byte));
+    byte *encoded = (byte *)calloc(sextet_cnt, sizeof(byte));
+    byte *decoded = (byte *)calloc(byte_cnt, sizeof(byte));
+    
+    gen_rndm_block(plain, byte_cnt);
+    printf("PLAINTEXT: ");
+    print_bytes(plain, byte_cnt);
+
+    encode_base64(plain, encoded, byte_cnt);
+    printf("ENCODED  : ");
+    print_bytes(encoded, sextet_cnt);
+
+    decode_base64(encoded, decoded, sextet_cnt);
+    printf("DECODED  : ");
+    print_bytes(decoded, byte_cnt);
+
+
+    // free some shit
+    free(plain);
+    free(encoded);
+    free(decoded);
+}
