@@ -21,5 +21,7 @@ void enc_vigenere_ctr(byte *plain, int len, byte *key, byte *cipher, byte *iv, i
 
 void dec_vigenere_ctr(byte *cipher, int len, byte *key, byte *plain, byte *iv, int block_size);
 
+void vigenere_demo();
+
 
 #endif // VIGENERE_H_
