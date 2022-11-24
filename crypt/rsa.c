@@ -166,8 +166,7 @@ void rsa_demo()
     // GENERATE PLAINTEXT
     generate_rndm_ints(rsa_plain, byte_cnt, key_pair.pub_key.n);
     printf("PLAIN : ");
-    for (int i = 0; i < byte_cnt; i++)
-    {
+    for (int i = 0; i < byte_cnt; i++) {
         printf("%d ", rsa_plain[i]);
     }
     printf("\n");
@@ -176,8 +175,7 @@ void rsa_demo()
     enc_rsa(rsa_plain, byte_cnt, rsa_encoded, key_pair.pub_key);
     printf("CIPHER: ");
     // print_bytes(encrypted, byte_cnt);
-    for (int i = 0; i < byte_cnt; i++)
-    {
+    for (int i = 0; i < byte_cnt; i++) {
         printf("%d ", rsa_encoded[i]);
     }
     printf("\n");
@@ -185,8 +183,7 @@ void rsa_demo()
     // DECRYPT CIPHERTEXT
     dec_rsa(rsa_encoded, byte_cnt, rsa_decoded, key_pair.prv_key);
     printf("PLAIN : ");
-    for (int i = 0; i < byte_cnt; i++)
-    {
+    for (int i = 0; i < byte_cnt; i++) {
         printf("%d ", rsa_decoded[i]);
     }
     printf("\n");
@@ -196,6 +193,4 @@ void rsa_demo()
     free(rsa_plain);
     free(rsa_encoded);
     free(rsa_decoded);
-
-    return 0;
 }
