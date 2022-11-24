@@ -158,7 +158,7 @@ void decode_base64(byte *base64, byte *bytes, int len)
 
 void b64_demo()
 {
-    int byte_cnt = 16;
+    int byte_cnt = 256;
     int sextet_cnt = get_sextet_cnt(byte_cnt);
 
     byte *plain = (byte *)calloc(byte_cnt, sizeof(byte));
@@ -166,16 +166,25 @@ void b64_demo()
     byte *decoded = (byte *)calloc(byte_cnt, sizeof(byte));
     
     gen_rndm_block(plain, byte_cnt);
-    printf("PLAINTEXT: ");
-    print_bytes(plain, byte_cnt);
+    printf("PLAINTEXT: \n");
+    print_bytes_line_break(plain, byte_cnt, 16);
+    printf("\n");
 
     encode_base64(plain, encoded, byte_cnt);
-    printf("ENCODED  : ");
-    print_bytes(encoded, sextet_cnt);
+    printf("ENCODED: \n");
+    print_bytes_line_break(encoded, sextet_cnt, 16);
+    printf("\n");
 
     decode_base64(encoded, decoded, sextet_cnt);
-    printf("DECODED  : ");
-    print_bytes(decoded, byte_cnt);
+    printf("DECODED: \n");
+    print_bytes_line_break(decoded, byte_cnt, 16);
+    printf("\n");
+
+    if (is_equal(plain, decoded, byte_cnt)) {
+        printf("SUCCESS\n");
+    } else {
+        printf("FAIL\n");
+    }
 
 
     // free some shit

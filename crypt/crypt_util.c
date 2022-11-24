@@ -14,6 +14,17 @@ void print_bytes(byte *bytes, int len)
     printf("\n");
 }
 
+void print_bytes_line_break(byte *bytes, int len, int line_len)
+{
+    for (int i = 0; i < len; i++) {
+        printf("%02x ", bytes[i]);
+        if ((i + 1) % line_len == 0) {
+            printf("\n");
+        }
+    }
+    printf("\n");
+}
+
 void print_byte_binary(byte b)
 {
     for (int i = 7; i >= 0; i--) {
@@ -94,4 +105,17 @@ void xor_bytes(byte *dest, byte *src1, byte *src2, int len)
     for (int i = 0; i < len; i++) {
         dest[i] = src1[i] ^ src2[i];
     }
+}
+
+int cnt_high_bits(byte *b, int size)
+{
+    int cnt = 0;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < 8; j++) {
+            if ((b[i] >> (7 - j)) & 1) {
+                cnt++;
+            }
+        }
+    }
+    return cnt;
 }
