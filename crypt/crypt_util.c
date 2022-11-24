@@ -55,11 +55,32 @@ void print_bytes_by_block(byte *bytes, int len, int block_size)
     free(block);
 }
 
+int generate_rndm_int(int max)
+{
+    srand(time(NULL));
+    return rand() % max;
+}
+
 void generate_rndm_ints(int *arr, int len, int max)
 {
     srand(time(NULL));
     for (int i = 0; i < len; i++) {
         arr[i] = rand() % max;
+    }
+}
+
+long generate_rndm_long(long max)
+{
+    srand(time(NULL));
+    long ret = rand() * rand() % max;
+    return ret;
+}
+
+void generate_rndm_longs(long *array, int len, long max)
+{
+    srand(time(NULL));
+    for (int i = 0; i < len; i++) {
+        array[i] = (long) generate_rndm_int % max;
     }
 }
 

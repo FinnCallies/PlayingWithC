@@ -5,13 +5,13 @@
 #include <stdbool.h>
 
 typedef struct {
-    int e;
-    int n;
+    long e;
+    long n;
 } rsa_pub_key;
 
 typedef struct {
-    int d;
-    int n;
+    long d;
+    long n;
 } rsa_prv_key;
 
 typedef struct {
@@ -22,23 +22,27 @@ typedef struct {
 
 void print_key_pair(rsa_key_pair key_pair);
 
-void eeA(int a, int b, int *x, int *y);
+void longs2bytes(long *array, byte *bytes, long len, rsa_pub_key pub_key);
 
-rsa_key_pair rsa_gen_key_pair(int size);
+void bytes2longs(byte *bytes, long *array, long len, rsa_pub_key pub_key);
 
-rsa_key_pair rsa_gen_key_pair_p_q(int size, int p, int q);
+void eeA(long a, long b, long *x, long *y);
 
-rsa_key_pair rsa_known_key_pair(int i);
+rsa_key_pair rsa_gen_key_pair(long size);
 
-int expo_mod(int num, int expo, int mod);
+rsa_key_pair rsa_gen_key_pair_p_q(long size, long p, long q);
 
-bool isPrime(int n);
+rsa_key_pair rsa_known_key_pair(long i);
 
-int gen_prime(int size);
+long expo_mod(long num, long expo, long mod);
 
-void enc_rsa(int *plain, int len, int *cipher, rsa_pub_key key);
+bool isPrime(long n);
 
-void dec_rsa(int *cipher, int len, int *plain, rsa_prv_key key);
+long gen_prime(long size);
+
+void enc_rsa(long *plain, long len, long *cipher, rsa_pub_key key);
+
+void dec_rsa(long *cipher, long len, long *plain, rsa_prv_key key);
 
 void rsa_demo();
 

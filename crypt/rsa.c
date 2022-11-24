@@ -14,9 +14,56 @@ void print_key_pair(rsa_key_pair key_pair)
     printf("prv_key: %d, pub_key: %d, n: %d\n", key_pair.prv_key.d, key_pair.pub_key.e, key_pair.pub_key.n);
 }
 
-void eeA(int a, int b, int *x, int *y)
+void longs2bytes(long *array, byte *bytes, long len, rsa_pub_key pub_key) 
 {
-    int x1, y1;
+    long n = pub_key.n - 1;
+    long bytes_per_long = (long) (log2(n) / 8) + 1;
+
+    for (int i = 0; i < len * bytes_per_long; i++) {
+        bytes[i] = 0;
+    }
+    
+
+    for (long i = 0; i < len; i++) {
+        long value = array[i];
+        for (long j = 0; j < bytes_per_long; j++)
+        {
+            if (j == bytes_per_long - 1) {
+                bytes[i * bytes_per_long + j] = value % 256;
+            } else {
+                bytes[i * bytes_per_long + j] = value / pow(2, 8 * (bytes_per_long - j - 1));
+                value = value % (long) pow(2, 8 * (bytes_per_long - j - 1));
+            }
+        }
+    }
+}
+
+void bytes2longs(byte *bytes, long *array, long len, rsa_pub_key pub_key)
+{
+    long n = pub_key.n - 1;
+    long bytes_per_long = (long) (log2(n) / 8) + 1;
+
+    for (int i = 0; i < len; i++) {
+        array[i] = 0;
+    }
+    
+
+    for (long i = 0; i < len; i++)
+    {
+        for (long j = 0; j < bytes_per_long; j++)
+        {
+            if (j == bytes_per_long - 1) {
+                array[i] += bytes[i * bytes_per_long + j];
+            } else {
+                array[i] += bytes[i * bytes_per_long + j] * pow(2, 8 * (bytes_per_long - j - 1));
+            }
+        }
+    }
+}
+
+void eeA(long a, long b, long *x, long *y)
+{
+    long x1, y1;
     if (b == 0)
     {
         *x = 1;
@@ -28,36 +75,36 @@ void eeA(int a, int b, int *x, int *y)
     *y = x1 - (a / b) * y1;
 }
 
-bool isPrime(int n) 
+bool isPrime(long n) 
 {
     if (n < 2) return false;
-    for (int i = 2; i <= sqrt(n); i++) {
+    for (long i = 2; i <= sqrt(n); i++) {
         if (n % i == 0) return false;
     }
     return true;
 }
 
-int gen_prime(int size)
+long gen_prime(long size)
 {
     srand(time(NULL));
-    int r = rand() % size;
+    long r = rand() % size;
     while (!isPrime(r)) {
         r = rand() % size;
     }
     return r;
 }
 
-rsa_key_pair rsa_gen_key_pair(int size)
+rsa_key_pair rsa_gen_key_pair(long size)
 {
     rsa_key_pair key_pair;
-    int e = pow(2, size) + 1;
-    int p = gen_prime(pow(2, size));
-    int q = gen_prime(pow(2, size));
+    long e = pow(2, size) + 1;
+    long p = gen_prime(pow(2, size));
+    long q = gen_prime(pow(2, size));
     while (p == q) q = gen_prime(pow(2, size));
-    int n = p * q;
-    int phi = (p - 1) * (q - 1);
-    int d = 0;
-    int y = 0;
+    long n = p * q;
+    long phi = (p - 1) * (q - 1);
+    long d = 0;
+    long y = 0;
     eeA(e, phi, &d, &y);
     if (d < 0) d += phi;
     key_pair.pub_key.e = e;
@@ -70,15 +117,15 @@ rsa_key_pair rsa_gen_key_pair(int size)
     return key_pair;
 }
 
-rsa_key_pair rsa_gen_key_pair_p_q(int size, int p, int q)
+rsa_key_pair rsa_gen_key_pair_p_q(long size, long p, long q)
 {
     rsa_key_pair key_pair;
-    int e = pow(2, size) + 1;
+    long e = pow(2, size) + 1;
     while (p == q) q = gen_prime(pow(2, size));
-    int n = p * q;
-    int phi = (p - 1) * (q - 1);
-    int d = 0;
-    int y = 0;
+    long n = p * q;
+    long phi = (p - 1) * (q - 1);
+    long d = 0;
+    long y = 0;
     eeA(e, phi, &d, &y);
     if (d < 0) d += phi;
     key_pair.pub_key.e = e;
@@ -95,7 +142,7 @@ rsa_key_pair rsa_gen_key_pair_p_q(int size, int p, int q)
     1. e = 17, p = 11, q = 13, n = 143, phi = 120, d = 113, y = 1
     2. e = 23, n = 143, d = 47
 */
-rsa_key_pair rsa_known_key_pair(int i)
+rsa_key_pair rsa_known_key_pair(long i)
 {
     rsa_key_pair key_pair;
 
@@ -118,20 +165,20 @@ rsa_key_pair rsa_known_key_pair(int i)
     return key_pair;
 }
 
-int expo_mod(int num, int expo, int mod)
+long expo_mod(long num, long expo, long mod)
 {
     if (expo == 0) return 1;
-    int ret = 1;
-    for (int i = 0; i < expo; i++)
+    long ret = 1;
+    for (long i = 0; i < expo; i++)
     {
         ret = (ret * num) % mod;
     }
     return ret;
 }  
 
-void enc_rsa(int *plain, int len, int *cipher, rsa_pub_key key)
+void enc_rsa(long *plain, long len, long *cipher, rsa_pub_key key)
 {
-    for (int i = 0; i < len; i++)
+    for (long i = 0; i < len; i++)
     {
         cipher[i] = expo_mod(plain[i], key.e, key.n);
         // printf("%d->%d ", msg[i], enc);
@@ -139,9 +186,9 @@ void enc_rsa(int *plain, int len, int *cipher, rsa_pub_key key)
     // printf("\n");
 }
 
-void dec_rsa(int *cipher, int len, int *plain, rsa_prv_key key)
+void dec_rsa(long *cipher, long len, long *plain, rsa_prv_key key)
 {
-    for (int i = 0; i < len; i++)
+    for (long i = 0; i < len; i++)
     {
         plain[i] = expo_mod(cipher[i], key.d, key.n);
         // printf("%d->%d ", array[i], array2[i]);
@@ -151,11 +198,12 @@ void dec_rsa(int *cipher, int len, int *plain, rsa_prv_key key)
 
 void rsa_demo()
 {
-    int byte_cnt = 16;
+    long byte_cnt = 16;
 
-    int *rsa_plain = (int *)calloc(byte_cnt, sizeof(int));
-    int *rsa_encoded = (int *)calloc(byte_cnt, sizeof(int));
-    int *rsa_decoded = (int *)calloc(byte_cnt, sizeof(int));
+    long *rsa_plain = (long *)calloc(byte_cnt, sizeof(long));
+    long *rsa_encoded = (long *)calloc(byte_cnt, sizeof(long));
+    long *rsa_decoded = (long *)calloc(byte_cnt, sizeof(long));
+    byte *bytes = (byte *)calloc(byte_cnt, sizeof(byte));
 
     // GENERATE RSA KEY PAIR
     rsa_key_pair key_pair;
@@ -164,28 +212,37 @@ void rsa_demo()
     printf("\n");
 
     // GENERATE PLAINTEXT
-    generate_rndm_ints(rsa_plain, byte_cnt, key_pair.pub_key.n);
+    generate_rndm_plaintext(bytes, byte_cnt);
+    bytes2longs(bytes, rsa_plain, byte_cnt, key_pair.pub_key);
     printf("PLAIN : ");
-    for (int i = 0; i < byte_cnt; i++) {
+    print_bytes(bytes, byte_cnt);
+    for (long i = 0; i < byte_cnt; i++) {
         printf("%d ", rsa_plain[i]);
     }
     printf("\n");
+    printf("\n"); 
 
     // ENCRYPT PLAINTEXT
     enc_rsa(rsa_plain, byte_cnt, rsa_encoded, key_pair.pub_key);
+    longs2bytes(rsa_encoded, bytes, byte_cnt, key_pair.pub_key);
     printf("CIPHER: ");
+    print_bytes(bytes, byte_cnt);
     // print_bytes(encrypted, byte_cnt);
-    for (int i = 0; i < byte_cnt; i++) {
+    for (long i = 0; i < byte_cnt; i++) {
         printf("%d ", rsa_encoded[i]);
     }
+    printf("\n");
     printf("\n");
 
     // DECRYPT CIPHERTEXT
     dec_rsa(rsa_encoded, byte_cnt, rsa_decoded, key_pair.prv_key);
+    longs2bytes(rsa_decoded, bytes, byte_cnt, key_pair.pub_key);
     printf("PLAIN : ");
-    for (int i = 0; i < byte_cnt; i++) {
+    print_bytes(bytes, byte_cnt);
+    for (long i = 0; i < byte_cnt; i++) {
         printf("%d ", rsa_decoded[i]);
     }
+    printf("\n");
     printf("\n");
 
 
