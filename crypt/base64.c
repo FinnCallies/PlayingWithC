@@ -156,6 +156,31 @@ void decode_base64(byte *base64, byte *bytes, int len)
     free(sextets);
 }
 
+void wtf_pls_fix()
+{
+    byte *plain = "Never gonna give you up, ...";
+    int plain_len = 28;
+    int enc_len = get_sextet_cnt(plain_len);
+    byte *enc = (byte *)calloc(enc_len, sizeof(byte));
+
+    printf("%s\n", plain); // some shit happening, idk, maybe https://www.youtube.com/watch?v=vusV4lF0Epo&t=309s&ab_channel=JacobSorber
+    
+    encode_base64(plain, enc, plain_len);
+
+    print_b64(enc, enc_len);
+
+    int dec_len = get_octet_cnt(enc, enc_len);
+    byte *dec = (byte *)calloc(dec_len, sizeof(byte));
+
+    decode_base64(enc, dec, enc_len);
+
+    print_b64(dec, dec_len);
+
+
+    free(enc);
+    free(dec);
+}
+
 void b64_demo()
 {
     int byte_cnt = 256;
