@@ -40,6 +40,10 @@ bool isPrime(long n);
 
 long gen_prime(long size);
 
+void os2ip(byte *bytes, long *array, int len);
+
+void i2osp(long *array, byte *bytes, int len);
+
 void enc_rsa(long *plain, long len, long *cipher, rsa_pub_key key);
 
 void dec_rsa(long *cipher, long len, long *plain, rsa_prv_key key);

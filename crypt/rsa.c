@@ -174,7 +174,21 @@ long expo_mod(long num, long expo, long mod)
         ret = (ret * num) % mod;
     }
     return ret;
-}  
+}
+
+void os2ip(byte *bytes, long *array, int len)
+{
+    for (int i = 0; i < len; i++) {
+        array[i] = bytes[i];
+    }
+}
+
+void i2osp(long *array, byte *bytes, int len)
+{
+    for (int i = 0; i < len; i++) {
+        bytes[i] = array[i];
+    }
+}
 
 void enc_rsa(long *plain, long len, long *cipher, rsa_pub_key key)
 {
