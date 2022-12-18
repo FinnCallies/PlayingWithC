@@ -9,6 +9,7 @@
 #include "rsa.h"
 #include "rc4.h"
 #include "base64.h"
+#include "des.h"
 
 
 int main(int argc, char const *argv[])
@@ -16,6 +17,8 @@ int main(int argc, char const *argv[])
     // vigenere_demo();
     // rsa_demo();
     // b64_demo();
+
+    des_test();
 
     return 0;
 }
