@@ -201,32 +201,35 @@ void gradient_descent(int count_xs, int features, int iterations, Matrix *theta,
     Matrix *theta_t;
     double *h_x = calloc(sizeof(double) * count_xs, sizeof(double));
     for (int j = 0; j < iterations; j++) {
+        Matrix *sum = matrix_new(features + 1, 1);
+        
         matrix_transpose(theta, &theta_t);
 
+        // h(x) = theta^T * x
         for (int i = 0; i < count_xs; i++) {
             Matrix *temp;
             matrix_multiply(theta_t, x[i], &temp);
-
             h_x[i] = matrix_get(temp, 0, 0);
             matrix_free(temp);
         }
 
-        Matrix *sum = matrix_new(features + 1, 1);
+        // sum = sum + (h(x) - y) * x
         for (int i = 0; i < count_xs; i++) {
             Matrix *h_x_y_x = matrix_skalar_multiply_ret(x[i], h_x[i] - matrix_get(y, i, 0));
             matrix_add(sum, h_x_y_x);
             matrix_free(h_x_y_x);
         }
         
+        // theta = theta - (alpha / m) * sum
         matrix_skalar_multiply(sum, alpha * (1.0 / count_xs));
         matrix_subtract(theta, sum);
 
+        // print theta every few iterations to spare time and the console
         if ((j + 1) % 100000 == 0) {
             printf("%d/%d: ", j+1, iterations);
             print_theta_func(theta);
             printf("\n");
         }
-        
         matrix_free(sum);
     }
     matrix_free(theta_t);
