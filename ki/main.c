@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "vec.h"
 #include "matrix.h"
 
@@ -38,7 +39,7 @@ void lecture1_exercise_linear_regression()
 void lecture1_exercise_gradient_descent()
 {
     // count_xs = number of training examples
-    int count_xs = 4;
+    int count_xs = 2;
     // features = number of features (wohnfläche)
     int features = 1;
     // iterations = number of iterations
@@ -100,8 +101,93 @@ void lecture1_exercise_gradient_descent()
 
 int main(int argc, char const *argv[])
 {
+    FILE *CSV;
+    // Suburb,Address,Rooms,Type,Price,Method,SellerG,Date,Distance,Postcode,Bedroom2,Bathroom,Car,Landsize,BuildingArea,YearBuilt,CouncilArea,Lattitude,Longtitude,Regionname,Propertycount
+    char *str = calloc(500, sizeof(char));
+    char *token;
+    char *delimiter = ",";
+
+    CSV = fopen("melb_data.csv", "r");
+
+
+
+    // count_xs = number of training examples
+    int count_xs = 0;
+    // features = number of features (wohnfläche)
+    int features = 1;
+    // iterations = number of iterations
+    int iterations = 1;
+
+    // init Matrices and Matrix-Array
+    Matrix *theta = matrix_new(features + 1, 1);
+    Matrix *y = matrix_new(count_xs, 1);
+    Matrix **x = calloc(13581, sizeof(Matrix *));
+    
+    // Setting the learning rate alpha
+    // double alpha = 0.00012306;   // 4,037 - 4,038 mio (Standartwerte)
+    double alpha = 0.0000001;          // 4,1 mio (vier Punkte)
+    
+    // Setting initial Theta
+    matrix_set(theta, 0, 0, 500000);
+    matrix_set(theta, 1, 0, 4000);
+
+
+
+    int lines = 0;
+    while(fgets(str,500,CSV)/*  && lines < 200 */) {
+        int tok = 0;
+        double price = 0.0;
+        double buildingArea = 0.0;
+
+        lines++;
+
+        token = strtok(str, delimiter);
+        while (token != NULL)
+        {
+            if (tok == 4) {
+                price = atof(token);
+            } else if (tok == 13) {
+                buildingArea = atof(token);
+            }
+            
+            token = strtok(NULL,delimiter);
+            tok++;
+        }
+
+        // printf("price: %lf; ", price);
+        // printf("buildingArea: %lf\n", buildingArea);
+
+        if (buildingArea > 0.0 && price > 0.0)
+        {
+            x[count_xs] = matrix_new(features + 1, 1);
+            matrix_set(x[count_xs], 0, 0, 1);
+            matrix_set(x[count_xs], 1, 0, buildingArea);
+            matrix_set(y, count_xs, 0, price);
+            count_xs++;
+            // printf("count_xs: %d; lines: %d\n", count_xs, lines);
+        }
+    }
+
+    
+    printf("test\n");
+    if (fclose(CSV) != 0) {
+        printf("Error closing file\n");
+    }
+    printf("lines: %d\n", lines);
+    printf("count_xs: %d\n", count_xs);
+
+
+    gradient_descent(count_xs, features, iterations, theta, x, y, alpha);
+
+    for (int i = 0; i < count_xs; i++) {
+        matrix_free(x[i]);
+    }
+    matrix_free(y);
+    matrix_free(theta);
+    free(x);
+
     // lecture1_exercise_linear_regression();
-    lecture1_exercise_gradient_descent();
+    // lecture1_exercise_gradient_descent();
 
     return 0;
 }
