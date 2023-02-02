@@ -6,7 +6,7 @@
 
 Matrix *matrix_new(int rows, int columns)
 {
-    Matrix *m = malloc(sizeof(Matrix));
+    Matrix *m = calloc(1, sizeof(Matrix));
     m->rows = rows;
     m->cols = columns;
     m->data = calloc(sizeof(double) * rows * columns, sizeof(double));
@@ -54,12 +54,15 @@ void matrix_print(Matrix *m)
 
 bool matrix_multiply(Matrix *a, Matrix *b, Matrix **c)
 {
+    printf("matrix multiply; ");
     if (a->cols != b->rows)
     {
         printf("Error: Matrix dimensions do not match");
         return false;
     }
+    printf("matrix dimensions match; ");
     *c = matrix_new(a->rows, b->cols);
+    printf("matrix init; ");
     for (int i = 0; i < a->rows; i++)
     {
         for (int j = 0; j < b->cols; j++)
@@ -198,18 +201,28 @@ void linear_regression(Matrix **xs, Matrix *y, Matrix *theta)
 
 void gradient_descent(int count_xs, int features, int iterations, Matrix *theta, Matrix **x, Matrix *y, double alpha)
 {
+    printf("count_xs = %d; ", count_xs);
     Matrix *theta_t;
-    double *h_x = calloc(sizeof(double) * count_xs, sizeof(double));
+    double *h_x = calloc(sizeof(double) * count_xs, sizeof(double)); // free(h_x)
     for (int j = 0; j < iterations; j++) {
         printf("Iteration %d/%d: ", j+1, iterations);
-        Matrix *sum = matrix_new(features + 1, 1);
+        Matrix *sum = matrix_new(features + 1, 1); // matrix_free(sum)
         
-        matrix_transpose(theta, &theta_t);
+        matrix_transpose(theta, &theta_t); // matrix_free(theta_t)
+        printf("matrix transposed; \n");
+        printf("no loop");
 
         // h(x) = theta^T * x
         for (int i = 0; i < count_xs; i++) {
+            printf("loop");
+            printf("h(x) %d/%d: ", i + 1, count_xs);
             Matrix *temp;
-            matrix_multiply(theta_t, x[i], &temp);
+            printf("matrix created; ");
+            if (!matrix_multiply(theta_t, x[i], &temp)) { // matrix_free(temp)
+                printf("Error: Matrix dimensions do not match");
+                return;
+            }
+            printf("matrix multiplied; ");
             h_x[i] = matrix_get(temp, 0, 0);
             matrix_free(temp);
         }
@@ -217,7 +230,7 @@ void gradient_descent(int count_xs, int features, int iterations, Matrix *theta,
 
         // sum = sum + (h(x) - y) * x
         for (int i = 0; i < count_xs; i++) {
-            Matrix *h_x_y_x = matrix_skalar_multiply_ret(x[i], h_x[i] - matrix_get(y, i, 0));
+            Matrix *h_x_y_x = matrix_skalar_multiply_ret(x[i], h_x[i] - matrix_get(y, i, 0)); // matrix_free(h_x_y_x)
             matrix_add(sum, h_x_y_x);
             matrix_free(h_x_y_x);
         }
@@ -237,4 +250,5 @@ void gradient_descent(int count_xs, int features, int iterations, Matrix *theta,
         matrix_free(sum);
     }
     matrix_free(theta_t);
+    free(h_x);
 }
