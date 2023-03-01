@@ -7,9 +7,21 @@
 Matrix *matrix_new(int rows, int columns)
 {
     Matrix *m = calloc(1, sizeof(Matrix));
+    if (m == NULL)
+    {
+        printf("Error: Could not allocate memory for matrix\n");
+        return NULL;
+    }
+    
     m->rows = rows;
     m->cols = columns;
     m->data = calloc(sizeof(double) * rows * columns, sizeof(double));
+    if (m->data == NULL)
+    {
+        printf("Error: Could not allocate memory for matrix data\n");
+        return NULL;
+    }
+
     return m;
 }
 
@@ -54,15 +66,14 @@ void matrix_print(Matrix *m)
 
 bool matrix_multiply(Matrix *a, Matrix *b, Matrix **c)
 {
-    printf("matrix multiply; ");
     if (a->cols != b->rows)
     {
-        printf("Error: Matrix dimensions do not match");
+        printf("Error: Matrix dimensions do not match\n");
         return false;
     }
-    printf("matrix dimensions match; ");
+    // printf("matrix dimensions match; \n");
     *c = matrix_new(a->rows, b->cols);
-    printf("matrix init; ");
+    // printf("matrix init; \n");
     for (int i = 0; i < a->rows; i++)
     {
         for (int j = 0; j < b->cols; j++)
@@ -204,29 +215,44 @@ void gradient_descent(int count_xs, int features, int iterations, Matrix *theta,
     printf("count_xs = %d; ", count_xs);
     Matrix *theta_t;
     double *h_x = calloc(sizeof(double) * count_xs, sizeof(double)); // free(h_x)
+    if (h_x == NULL)
+    {
+        printf("Error: Could not allocate memory");
+        return;
+    }    
+
+
     for (int j = 0; j < iterations; j++) {
-        printf("Iteration %d/%d: ", j+1, iterations);
+        if ((j + 1) % 1000 == 0) {
+            printf("Iteration %d/%d: \n", j+1, iterations);
+        }
         Matrix *sum = matrix_new(features + 1, 1); // matrix_free(sum)
         
         matrix_transpose(theta, &theta_t); // matrix_free(theta_t)
-        printf("matrix transposed; \n");
-        printf("no loop");
+        /* printf("matrix transposed; \n");
+        printf("no loop; \n"); */
 
         // h(x) = theta^T * x
         for (int i = 0; i < count_xs; i++) {
-            printf("loop");
-            printf("h(x) %d/%d: ", i + 1, count_xs);
+            /* printf("loop\n");
+            printf("h(x) %d/%d: \n", i + 1, count_xs); */
             Matrix *temp;
-            printf("matrix created; ");
+            /* printf("matrix created; \n");
+            printf("%p\n", theta_t);
+            matrix_print(theta_t);
+            printf("\n");
+            printf("%p\n", x[i]);
+            matrix_print(x[i]);
+            printf("\n"); */
             if (!matrix_multiply(theta_t, x[i], &temp)) { // matrix_free(temp)
                 printf("Error: Matrix dimensions do not match");
                 return;
             }
-            printf("matrix multiplied; ");
+            // printf("matrix multiplied; \n");
             h_x[i] = matrix_get(temp, 0, 0);
             matrix_free(temp);
         }
-        printf("h(x) computed; ");
+        // printf("h(x) computed; ");
 
         // sum = sum + (h(x) - y) * x
         for (int i = 0; i < count_xs; i++) {
@@ -234,15 +260,15 @@ void gradient_descent(int count_xs, int features, int iterations, Matrix *theta,
             matrix_add(sum, h_x_y_x);
             matrix_free(h_x_y_x);
         }
-        printf("sum computed; ");
+        // printf("sum computed; ");
         
         // theta = theta - (alpha / m) * sum
         matrix_skalar_multiply(sum, alpha * (1.0 / count_xs));
         matrix_subtract(theta, sum);
-        printf("theta computed; \n");
+        // printf("theta computed; \n");
 
         // print theta every few iterations to spare time and the console
-        if ((j + 1) % 1 == 0) {
+        if ((j + 1) % 1000 == 0) {
             printf("%d/%d: ", j+1, iterations);
             print_theta_func(theta);
             printf("\n");

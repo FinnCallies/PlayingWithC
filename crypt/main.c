@@ -15,7 +15,7 @@ int main(int argc, char const *argv[])
 {
     // vigenere_demo();
     // rsa_demo();
-    // b64_demo();
+    b64_demo();
 
     return 0;
 }
